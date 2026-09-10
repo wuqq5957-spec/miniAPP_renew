@@ -822,6 +822,7 @@
     .history-status { margin-left: auto; color: var(--muted); font-size: 10px; }
     .store-page-scroll { min-height: 0; flex: 1; padding: 12px 12px 28px; overflow-y: auto; scrollbar-width: none; }
     .store-orders-page .store-page-scroll { padding-bottom: 84px; }
+    .my-orders-page .store-page-scroll { padding-bottom: 28px; }
     .store-page-scroll::-webkit-scrollbar { display: none; }
     .store-context { margin-bottom: 12px; padding: 12px 14px; border-radius: 15px; display: flex; align-items: center; gap: 10px; background: #fff; }
     .store-context-logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(145deg,#401c25,#8b2439); color: #f2ce92; font-size: 10px; font-weight: 750; }
@@ -893,6 +894,8 @@
     .consumption-meta { padding: 10px 0 0; display: grid; gap: 6px; }
     .consumption-meta-row { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 9px; }
     .consumption-order .store-order-actions { margin-top: 11px; }
+    .my-order-heading { min-width: 0; flex: 1; display: grid; gap: 6px; }
+    .my-order-store { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; }
     .store-order-empty { display: none; padding: 70px 20px; color: var(--muted); text-align: center; font-size: 11px; }
     .store-order-empty.show { display: block; }
     .login-mask { position: absolute; z-index: 94; inset: 0; background: rgba(0,0,0,.36); opacity: 0; visibility: hidden; transition: .2s ease; }
@@ -909,6 +912,7 @@
     .settings-row-copy { min-width: 0; flex: 1; }
     .settings-row-title { display: block; font-size: 12px; }
     .settings-row-note { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .settings-version { margin-left: auto; color: var(--muted); font-size: 11px; }
     .setting-switch { position: relative; width: 42px; height: 24px; flex: 0 0 auto; }
     .setting-switch input { position: absolute; opacity: 0; pointer-events: none; }
     .setting-switch-track { position: absolute; inset: 0; border-radius: 12px; background: #d8d8dc; transition: background .2s ease; }
@@ -1101,6 +1105,7 @@
       <h3>个人中心</h3>
       <button class="prototype-link" data-prototype-page="my">我的</button>
       <button class="prototype-link" data-prototype-page="my-bookings">我的预约</button>
+      <button class="prototype-link" data-prototype-page="my-orders">我的订单</button>
       <button class="prototype-link" data-prototype-page="my-reviews">我的评价</button>
       <button class="prototype-link" data-prototype-page="assets-cards">我的卡券 · 会员卡</button>
       <button class="prototype-link" data-prototype-page="assets-coupons">我的卡券 · 优惠券</button>
@@ -1113,7 +1118,7 @@
     <section class="prototype-document-view" id="prototypeDocumentView" aria-label="PRD 文档阅读区" hidden>
       <article class="prd-article" data-prd-document="doc-changelog" hidden>
         <h1>更新记录</h1>
-        <div class="prd-table-wrap"><table><thead><tr><th scope="col">创建时间</th><th scope="col">创建人</th><th scope="col">操作内容</th></tr></thead><tbody><tr><td>2026-09-07</td><td>吴琼</td><td>创建</td></tr><tr><td>2026-09-07</td><td>吴琼</td><td><ul><li>更新首页城市选择与精选活动展示规则</li><li>隐藏门店主页“写评价”入口</li><li>更新店铺评分规则（一期建议）</li></ul></td></tr></tbody></table></div>
+        <div class="prd-table-wrap"><table><thead><tr><th scope="col">创建时间</th><th scope="col">创建人</th><th scope="col">操作内容</th></tr></thead><tbody><tr><td>2026-09-07</td><td>吴琼</td><td>创建</td></tr><tr><td>2026-09-07</td><td>吴琼</td><td><ul><li>更新首页城市选择与精选活动展示规则</li><li>隐藏门店主页“写评价”入口</li><li>更新店铺评分规则（一期建议）</li></ul></td></tr><tr><td>2026-09-10</td><td>吴琼</td><td><ul><li>调整门店订单评价入口规则：团购订单仅“已完成”可评价，评价成功后隐藏入口</li><li>新增“我的订单”多门店聚合页，补充订单名称调整及评价规则；商城购物订单提示不在本期范围内</li><li>新增只读的小程序版本号展示</li></ul></td></tr></tbody></table></div>
       </article>
       <article class="prd-article" id="businessFlowDocument" data-prd-document="doc-flow" hidden>
         <h1>业务流程图</h1>
@@ -1171,7 +1176,7 @@
                   <li>优惠券<small>按门店区分 → 历史优惠券（已使用／已过期）</small></li>
                 </ul>
               </li>
-              <li>我的评价<small>审核中／已发布／审核失败及失败原因</small></li>
+              <li>我的评价<small>系统审核中／已发布</small></li>
               <li>设置<small>定位授权／营销短信通知开关；服务和隐私协议入口</small></li>
               <li>我的预约／我的订单<span class="flow-tag">页面待补充</span></li>
               <li>收货地址／联系客服／协议详情<span class="flow-tag">内容待补充</span></li>
@@ -1555,7 +1560,7 @@
           <div class="account-quick">
             <button class="account-quick-item" id="openMyBookings"><span class="account-quick-icon">约</span><span>预约</span></button>
             <button class="account-quick-item" id="openAssets"><span class="account-quick-icon">券</span><span>卡券</span></button>
-            <button class="account-quick-item" data-message="正在打开我的订单"><span class="account-quick-icon">单</span><span>订单</span></button>
+            <button class="account-quick-item" id="openMyOrders"><span class="account-quick-icon">单</span><span>订单</span></button>
             <button class="account-quick-item" id="openMyReviews"><span class="account-quick-icon">评</span><span>评价</span></button>
           </div>
         </section>
@@ -1569,6 +1574,78 @@
         <button class="nav-item" id="myHomeNav"><span class="nav-icon">⌂</span><span>首页</span></button>
         <button class="nav-item active"><span class="nav-icon">♙</span><span>我的</span></button>
       </nav>
+    </section>
+    <section class="store-orders-page my-orders-page" id="myOrdersPage" aria-label="我的订单页面" aria-hidden="true">
+      <header class="account-top">
+        <div class="compose-nav">
+          <button class="compose-back" id="myOrdersBack" aria-label="返回我的页面">‹</button>
+          <h1>我的订单</h1>
+          <span class="account-nav-spacer" aria-hidden="true"></span>
+        </div>
+      </header>
+      <nav class="order-business-tabs" aria-label="我的订单业务类型">
+        <button class="order-business-tab active" data-my-order-type="store">门店消费</button>
+        <button class="order-business-tab" data-my-order-type="mall">商城购物</button>
+        <button class="order-business-tab" data-my-order-type="group">团购活动</button>
+      </nav>
+      <nav class="order-tabs" id="myOrderStatusTabs" aria-label="我的订单状态筛选">
+        <button class="order-tab active" data-my-order-status-slot="all" data-my-order-filter="all">全部</button>
+        <button class="order-tab" data-my-order-status-slot="unpaid" data-my-order-filter="unpaid">已完成</button>
+        <button class="order-tab" data-my-order-status-slot="progress" data-my-order-filter="refunded">已退款</button>
+        <button class="order-tab" data-my-order-status-slot="service" data-my-order-filter="partial-refund">部分退款</button>
+        <button class="order-tab" data-my-order-status-slot="done" data-my-order-filter="voided">已作废</button>
+      </nav>
+      <div class="store-page-scroll">
+        <div class="store-order-list" id="myOrderList">
+          <article class="store-order-card consumption-order" data-my-order-type="store" data-my-order-status="completed">
+            <div class="store-order-head"><div class="my-order-heading"><strong class="my-order-store">北森美发（K11店）</strong><div class="consumption-tags"><span class="consumption-tag">项目消费</span></div></div><span class="store-order-status">已完成</span></div>
+            <h2 class="consumption-title">洗剪吹、激发等3个项目</h2><div class="consumption-divider"></div>
+            <div class="payment-details"><div class="payment-row"><span>支付宝</span><span>¥153.00</span></div></div><div class="payment-total"><small>合计</small>¥153.00</div><div class="consumption-divider"></div>
+            <div class="consumption-meta"><div class="consumption-meta-row"><span>服务员工</span><span>房老板</span></div><div class="consumption-meta-row"><span>消费时间</span><span>2026.08.26 11:24:09</span></div></div>
+            <div class="store-order-actions"><button class="store-order-action primary order-review-action">评价</button></div>
+          </article>
+          <article class="store-order-card consumption-order" data-my-order-type="store" data-my-order-status="refunded">
+            <div class="store-order-head"><div class="my-order-heading"><strong class="my-order-store">ep 美发（太仓路店）</strong><div class="consumption-tags"><span class="consumption-tag">项目消费</span></div></div><span class="store-order-status done">已退款</span></div>
+            <h2 class="consumption-title">潮色染护焕新套餐</h2><div class="consumption-divider"></div>
+            <div class="payment-details"><div class="payment-row"><span>原支付金额</span><span>¥449.00</span></div><div class="payment-row"><span>退款金额</span><span>¥449.00</span></div></div><div class="payment-total"><small>实付</small>¥449.00</div><div class="consumption-divider"></div>
+            <div class="consumption-meta"><div class="consumption-meta-row"><span>服务员工</span><span>Mia</span></div><div class="consumption-meta-row"><span>消费时间</span><span>2026.08.22 15:30:00</span></div></div>
+          </article>
+          <article class="store-order-card consumption-order" data-my-order-type="store" data-my-order-status="partial-refund">
+            <div class="store-order-head"><div class="my-order-heading"><strong class="my-order-store">北森美发（徐汇滨江店）</strong><div class="consumption-tags"><span class="consumption-tag">项目消费</span></div></div><span class="store-order-status">部分退款</span></div>
+            <h2 class="consumption-title">染发与头皮护理2个项目</h2><div class="consumption-divider"></div>
+            <div class="payment-details"><div class="payment-row"><span>原支付金额</span><span>¥699.00</span></div><div class="payment-row"><span>退款金额</span><span>−¥199.00</span></div></div><div class="payment-total"><small>实付</small>¥500.00</div><div class="consumption-divider"></div>
+            <div class="consumption-meta"><div class="consumption-meta-row"><span>服务员工</span><span>阿森</span></div><div class="consumption-meta-row"><span>消费时间</span><span>2026.08.18 10:20:00</span></div></div>
+            <div class="store-order-actions"><button class="store-order-action primary order-review-action">评价</button></div>
+          </article>
+          <article class="store-order-card consumption-order" data-my-order-type="store" data-my-order-status="voided">
+            <div class="store-order-head"><div class="my-order-heading"><strong class="my-order-store">北森美发（静安大悦城店）</strong><div class="consumption-tags"><span class="consumption-tag member">会员卡</span><span class="consumption-tag neutral">充值</span></div></div><span class="store-order-status done">已作废</span></div>
+            <h2 class="consumption-title">VIP会员储值卡</h2><div class="consumption-divider"></div>
+            <div class="payment-details"><div class="payment-row"><span>订单金额</span><span>¥500.00</span></div></div><div class="payment-total"><small>合计</small>¥500.00</div><div class="consumption-divider"></div>
+            <div class="consumption-meta"><div class="consumption-meta-row"><span>服务员工</span><span>房老板</span></div><div class="consumption-meta-row"><span>交易时间</span><span>2026.08.15 11:05:51</span></div></div>
+          </article>
+          <article class="store-order-card group-order-card" data-my-order-type="group" data-my-order-status="paid" hidden>
+            <div class="store-order-head"><span class="group-store-mark">轻</span><strong class="store-order-name">轻奢美肌中心</strong><span class="store-order-status paid">已支付</span></div>
+            <div class="store-order-main"><span class="group-project-mark">焕</span><div class="store-order-copy"><h2 class="store-order-title">焕活新生·深层护理</h2><div class="store-order-meta">内购活动 · 含 4 项服务</div><div class="store-order-meta">北京市朝阳区××路</div><div class="store-order-total"><strong>¥128</strong><span>×1</span></div></div></div>
+            <div class="group-order-footer"><span class="group-order-date">2024-06-01</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button></div></div>
+          </article>
+          <article class="store-order-card group-order-card" data-my-order-type="group" data-my-order-status="unpaid" hidden>
+            <div class="store-order-head"><span class="group-store-mark">轻</span><strong class="store-order-name">轻奢美肌中心</strong><span class="store-order-status">待支付</span></div>
+            <div class="store-order-main"><span class="group-project-mark">焕</span><div class="store-order-copy"><h2 class="store-order-title">焕活新生·深层护理</h2><div class="store-order-meta">内购活动 · 含 4 项服务</div><div class="store-order-meta">北京市朝阳区××路</div><div class="store-order-total"><strong>¥128</strong><span>×1</span></div></div></div>
+            <div class="group-order-footer"><span class="group-order-date">2024-06-02</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button><button class="store-order-action primary" data-message="正在进入支付页面">去支付</button></div></div>
+          </article>
+          <article class="store-order-card group-order-card" data-my-order-type="group" data-my-order-status="completed" hidden>
+            <div class="store-order-head"><span class="group-store-mark">潮</span><strong class="store-order-name">潮流造型屋</strong><span class="store-order-status completed">已完成</span></div>
+            <div class="store-order-main"><span class="group-project-mark">潮</span><div class="store-order-copy"><h2 class="store-order-title">潮流造型·焕新之选</h2><div class="store-order-meta">内购活动 · 含 3 项服务</div><div class="store-order-meta">北京市海淀区××路</div><div class="store-order-total"><strong>¥88</strong><span>×1</span></div></div></div>
+            <div class="group-order-footer"><span class="group-order-date">2024-05-20</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button><button class="store-order-action primary order-review-action">评价</button></div></div>
+          </article>
+          <article class="store-order-card group-order-card" data-my-order-type="group" data-my-order-status="refunded" hidden>
+            <div class="store-order-head"><span class="group-store-mark">丝</span><strong class="store-order-name">丝语造型工作室</strong><span class="store-order-status refunded">已退单</span></div>
+            <div class="store-order-main"><span class="group-project-mark">轻</span><div class="store-order-copy"><h2 class="store-order-title">轻奢剪发·质感之选</h2><div class="store-order-meta">内购活动 · 含 4 项服务</div><div class="store-order-meta">北京市西城区××路</div><div class="store-order-total"><strong>¥78</strong><span>×1</span></div></div></div>
+            <div class="group-order-footer"><span class="group-order-date">2024-05-15</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button></div></div><p class="group-order-hint">该订单已退单，如有疑问请联系商家</p>
+          </article>
+        </div>
+        <div class="store-order-empty" id="myOrderEmpty">当前状态下暂无订单</div>
+      </div>
     </section>
     <section class="profile-page" id="profilePage" aria-label="个人信息页面" aria-hidden="true">
       <header class="account-top">
@@ -1611,15 +1688,6 @@
           <div class="my-review-date">发布于 2026年8月12日</div>
           <div class="my-review-rating"><span class="my-review-stars" aria-label="4.5分">★★★★★</span><strong class="my-review-score">4.5分</strong><span class="my-review-feeling">满意</span></div>
           <p class="my-review-content">预约后到店基本不用等待，服务过程很顺畅，发色也符合预期。</p>
-        </article>
-        <article class="my-review-card">
-          <div class="my-review-head"><h2 class="my-review-store">北森美发（静安大悦城店）</h2><span class="my-review-status failed">审核失败</span></div>
-          <div class="my-review-divider"></div>
-          <div class="my-review-date">发布于 2026年7月29日</div>
-          <div class="my-review-rating"><span class="my-review-stars" aria-label="3.0分">★★★☆☆</span><strong class="my-review-score">3.0分</strong><span class="my-review-feeling">一般</span></div>
-          <p class="my-review-content">周末到店客人比较多，等待时间比预计稍长，希望后续可以优化预约时段。</p>
-          <div class="my-review-failure"><strong>失败原因</strong>评价内容涉及违规言论</div>
-          <div class="my-review-actions"><button class="my-review-reedit" id="reeditMyReview">重新编辑</button></div>
         </article>
         <p class="my-reviews-end">没有更多了</p>
         </div>
@@ -1842,7 +1910,7 @@
           <article class="store-order-card group-order-card" data-store-order-type="group" data-store-order-status="paid" hidden>
             <div class="store-order-head"><span class="group-store-mark">轻</span><strong class="store-order-name">轻奢美肌中心</strong><span class="store-order-status paid">已支付</span></div>
             <div class="store-order-main"><span class="group-project-mark">焕</span><div class="store-order-copy"><h2 class="store-order-title">焕活新生·深层护理</h2><div class="store-order-meta">内购活动 · 含 4 项服务</div><div class="store-order-meta">北京市朝阳区××路</div><div class="store-order-total"><strong>¥128</strong><span>×1</span></div></div></div>
-            <div class="group-order-footer"><span class="group-order-date">2024-06-01</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button><button class="store-order-action primary order-review-action">评价</button></div></div>
+            <div class="group-order-footer"><span class="group-order-date">2024-06-01</span><div class="store-order-actions"><button class="store-order-action" data-message="正在联系商家">联系商家</button></div></div>
           </article>
           <article class="store-order-card group-order-card" data-store-order-type="group" data-store-order-status="unpaid" hidden>
             <div class="store-order-head"><span class="group-store-mark">轻</span><strong class="store-order-name">轻奢美肌中心</strong><span class="store-order-status">待支付</span></div>
@@ -1894,6 +1962,13 @@
           <h2 class="settings-card-title">协议与隐私</h2>
           <button class="account-list-item" data-message="正在查看服务协议"><span class="account-list-label">服务协议</span><span class="account-chevron">›</span></button>
           <button class="account-list-item" data-message="正在查看隐私协议"><span class="account-list-label">隐私协议</span><span class="account-chevron">›</span></button>
+        </section>
+        <section class="settings-card" aria-label="关于小程序">
+          <h2 class="settings-card-title">关于小程序</h2>
+          <div class="settings-row">
+            <div class="settings-row-copy"><span class="settings-row-title">小程序版本</span></div>
+            <span class="settings-version">V1.0.0</span>
+          </div>
         </section>
         <button class="settings-logout" data-message="已退出当前账号">退出登录</button>
       </div>
@@ -2218,7 +2293,7 @@
         <details class="home-logic-section"><summary>五、门店评价</summary><div class="home-logic-body">
           <h4>5.1 公开范围与计分口径</h4>
           <ul>
-            <li>只展示本门店已发布、审核通过且未被删除的评价；审核中与审核失败的内容仅由用户在“我的评价”查看。</li>
+            <li>只展示本门店已发布、系统审核通过且未被删除的评价；审核中的内容仅由用户在“我的评价”查看，系统审核不通过的内容不会发布成功或生成评价记录。</li>
             <li>评价服务分别返回展示数量、综合评分及有效计分样本数。已公开但不满足计分周期或去重条件的评价，可以展示，但不得重复计分。</li>
             <li>评分公式、基础样本、订单／到店验证／直接门店评价权重及 365 天规则，统一以“概览 → 店铺评分计算规则”为准；</li>
           </ul>
@@ -2282,7 +2357,7 @@
           </ul>
           <h4>1.2 公开评价口径</h4>
           <ul>
-            <li>只展示已发布、审核通过且未被删除的评价；审核中、审核失败及用户已删除的评价不进入列表。</li>
+            <li>只展示已发布、系统审核通过且未被删除的评价；审核中及用户已删除的评价不进入列表，系统审核不通过的内容不会发布成功。</li>
             <li>评价是否计入店铺综合评分，不影响其公开展示资格；计分口径统一以“概览 → 店铺评分计算规则”为准。</li>
           </ul>
         </div></details>
@@ -2387,9 +2462,28 @@
         <h3 class="home-logic-title">我的预约页面逻辑说明</h3>
         <div class="home-logic-body"><p>从“我的”页预约入口进入，查询当前登录用户在所有门店的预约记录；列表卡片样式、状态及操作规则与“门店预约”页一致。</p><p>卡片额外通过门店名称区分预约归属；排序为待到店优先，其余记录按预约时间倒序。未登录时进入统一登录页，无记录时展示“暂无预约记录”。</p></div>
       </section>
+      <section class="home-logic" data-prototype-note-for="my-orders" aria-label="我的订单页面逻辑说明" hidden>
+        <h3 class="home-logic-title">我的订单页面逻辑说明</h3>
+        <p class="home-logic-source">适用范围：从“我的”页订单入口进入，查询当前登录用户在所有门店产生的订单。</p>
+        <details class="home-logic-section" open><summary>一、数据范围与分类</summary><div class="home-logic-body"><ul>
+          <li>本期聚合当前登录用户在所有门店产生的门店消费和团购活动订单，不受当前浏览门店限制。</li>
+          <li>顶部一级分类保留“商城购物”入口，但点击仅提示“商城购物订单不在本期范围内”，不切换列表或展示商城订单页面。</li>
+          <li>未登录时点击入口进入统一登录页；登录成功后返回“我的订单”并查询最新账号数据。</li>
+        </ul></div></details>
+        <details class="home-logic-section" open><summary>二、订单名称修改</summary><div class="home-logic-body"><ul>
+          <li>原「流水订单」改为：门店消费</li>
+          <li>原「商品订单」改为：商城购物</li>
+          <li>新增：团购活动- RTS订单</li>
+        </ul></div></details>
+        <details class="home-logic-section" open><summary>三、评价入口规则</summary><div class="home-logic-body"><ul>
+          <li>门店消费订单在“已完成、部分退款”状态下展示“评价”；已退款、已作废状态不展示。</li>
+          <li>团购活动订单仅在“已完成”状态下展示“评价”；待支付、已支付、已退单状态不展示。</li>
+          <li>商城购物订单整体不在本期范围内，不展示列表及评价入口。评价成功提交后，对应订单的评价入口立即隐藏，避免重复评价。</li>
+        </ul></div></details>
+      </section>
       <section class="home-logic" data-prototype-note-for="orders-store orders-mall orders-group" aria-label="门店订单页面逻辑说明" hidden>
         <h3 class="home-logic-title">门店订单页面逻辑说明</h3>
-        <div class="home-logic-body"><ol><li><strong>数据范围：</strong>仅展示当前登录用户在当前门店内产生的订单，分为门店消费、商城购物和团购活动。</li><li><strong>评价入口：</strong>门店消费订单在“已完成、部分退款”状态下展示“评价”；团购活动订单在“已支付、已完成”状态下展示“评价”。</li><li><strong>评价成功：</strong>评价成功提交后，对应订单的“评价”按钮入口不再展示；订单标记为已评价，审核结果不影响入口隐藏，避免同一订单重复评价。</li><li><strong>商城购物：</strong>本期暂不纳入评价功能，不展示“评价”入口。</li></ol></div>
+        <div class="home-logic-body"><ol><li><strong>数据范围：</strong>仅展示当前登录用户在当前门店内产生的订单，分为门店消费、商城购物和团购活动。</li><li><strong>评价入口：</strong>门店消费订单在“已完成、部分退款”状态下展示“评价”；团购活动订单仅在“已完成”状态下展示“评价”，“已支付”状态不展示评价入口。</li><li><strong>评价成功：</strong>评价成功提交后，对应订单的“评价”按钮入口不再展示；订单标记为已评价，审核结果不影响入口隐藏，避免同一订单重复评价。</li><li><strong>商城购物：</strong>本期暂不纳入评价功能，不展示“评价”入口。</li></ol></div>
       </section>
       <section class="home-logic" data-prototype-note-for="review" aria-label="发布评价页面逻辑说明" hidden>
         <h3 class="home-logic-title">发布评价页面逻辑说明（一期建议）</h3>
@@ -2419,8 +2513,8 @@
         </div></details>
         <details class="home-logic-section"><summary>四、提交结果与审核</summary><div class="home-logic-body">
           <ul>
-            <li>提交成功后创建一条“审核中”的个人评价记录，返回来源页面或“我的评价”；公开门店评价列表仅展示审核通过且已发布的内容。</li>
-            <li>审核失败时在“我的评价”展示失败状态和原因；审核中及失败内容不进入门店公开评价统计与列表。</li>
+            <li>提交成功后创建一条“审核中”的个人评价记录，返回来源页面或“我的评价”；公开门店评价列表仅展示系统审核通过且已发布的内容。</li>
+            <li>系统审核不通过时，本次评价不发布成功、不生成“我的评价”记录，也不进入门店公开评价统计与列表。</li>
             <li>当前 Demo 演示“检验中 → 提交中 → 提交成功”流程，不调用真实敏感词服务，也不创建持久化评价记录。</li>
           </ul>
         </div></details>
@@ -2463,7 +2557,7 @@
           <ul>
             <li><strong>预约：</strong>展示固定入口，不展示跨门店汇总数量；点击进入“我的预约”列表，查询当前用户在全部门店的预约记录。</li>
             <li><strong>卡券：</strong>展示固定入口；点击进入“我的卡券”，会员卡与优惠券均按所属门店分组展示。</li>
-            <li><strong>订单：</strong>展示固定入口；点击进入“我的订单”，查询当前用户在所有门店产生的跨门店门店消费、商城购物和团购活动订单。</li>
+            <li><strong>订单：</strong>展示固定入口；点击进入“我的订单”，本期查询当前用户在所有门店产生的跨门店门店消费和团购活动订单；商城购物入口仅提示不在本期范围内。</li>
             <li><strong>评价：</strong>展示固定入口；点击进入“我的评价”，查询当前用户在所有门店提交的跨门店评价及审核状态。</li>
             <li>上述入口始终展示；未登录用户点击任一入口时进入小程序统一登录页，登录成功后返回对应入口并按最新账号数据查询，不沿用上一个账号的缓存。</li>
           </ul>
@@ -2499,10 +2593,9 @@
           <li>退出登录或未登录进入时，跳转小程序统一登录页；登录成功后返回本页并重新查询。</li>
         </ul></div></details>
         <details class="home-logic-section"><summary>二、评价卡片</summary><div class="home-logic-body"><ul>
-          <li><strong>展示字段：</strong>门店名称、提交时间、星级与分数、评价标签、评价内容、审核状态；审核失败时额外展示失败原因。</li>
+          <li><strong>展示字段：</strong>门店名称、提交时间、星级与分数、评价标签、评价内容、审核状态。</li>
           <li><strong>字段取值：</strong>门店名称取评价归属门店名称；提交时间取评价首次发布成功时间；星级、分数、标签和内容取用户提交内容。内容为空时不展示评价正文区域。</li>
-          <li><strong>状态枚举：</strong>审核中（已提交，等待审核）；已发布（审核通过，可在门店公开评价中展示）；审核失败（审核未通过，仅本人可见并展示失败原因及“重新编辑”按钮）。</li>
-          <li><strong>重新编辑：</strong>仅审核失败评价展示；点击进入发布评价页并带入原评分和评价内容，用户修改后重新提交审核。</li>
+          <li><strong>状态枚举：</strong>系统审核中（已提交，等待系统审核）；已发布（系统审核通过，可在门店公开评价中展示）。系统审核不通过时，评价不会发布成功，不生成评价记录。</li>
         </ul></div></details>
         <details class="home-logic-section"><summary>三、排序与分页</summary><div class="home-logic-body"><ul>
           <li>默认按提交时间倒序排列；提交时间相同的记录按评价 ID 倒序排列，保证顺序稳定。</li>
@@ -2528,7 +2621,7 @@
       </section>
       <section class="home-logic" data-prototype-note-for="settings" aria-label="设置页面逻辑说明" hidden>
         <h3 class="home-logic-title">设置页面逻辑说明</h3>
-        <div class="home-logic-body"><p>提供个人信息、定位授权、营销通知及服务与隐私协议等设置入口；营销短信通知开关仅影响当前账号的对应偏好。</p><p><strong>定位权限：</strong>为跳转入口，不在小程序内直接开关。点击后进入微信小程序“设置”页面管理位置权限；跳转路径为：剑琅美遇小程序“设置” → 微信小程序“设置” → 位置权限。</p><p>退出登录后清除本地个人资产缓存，保留公开门店浏览能力。</p></div>
+        <div class="home-logic-body"><p>提供个人信息、定位授权、营销通知、服务与隐私协议及小程序版本信息；营销短信通知开关仅影响当前账号的对应偏好。</p><p><strong>定位权限：</strong>为跳转入口，不在小程序内直接开关。点击后进入微信小程序“设置”页面管理位置权限；跳转路径为：剑琅美遇小程序“设置” → 微信小程序“设置” → 位置权限。</p><p><strong>小程序版本：</strong>展示的版本号与当前小程序提审版本号一致，仅作只读信息，不提供点击或修改操作。</p><p>退出登录后清除本地个人资产缓存，保留公开门店浏览能力。</p></div>
       </section>
       <section class="home-logic" data-prototype-note-for="login" aria-label="登录提示页面逻辑说明" hidden>
         <h3 class="home-logic-title">登录提示逻辑说明</h3>
@@ -2925,6 +3018,7 @@
     const myPage = document.getElementById('myPage');
     const settingsPage = document.getElementById('settingsPage');
     const profilePage = document.getElementById('profilePage');
+    const myOrdersPage = document.getElementById('myOrdersPage');
     const myReviewsPage = document.getElementById('myReviewsPage');
     const assetsPage = document.getElementById('assetsPage');
     const couponHistoryPage = document.getElementById('couponHistoryPage');
@@ -2956,6 +3050,8 @@
       myReviewsPage.setAttribute('aria-hidden', 'true');
       myBookingsPage.classList.remove('show');
       myBookingsPage.setAttribute('aria-hidden', 'true');
+      myOrdersPage.classList.remove('show');
+      myOrdersPage.setAttribute('aria-hidden', 'true');
       assetsPage.classList.remove('show');
       assetsPage.setAttribute('aria-hidden', 'true');
       couponHistoryPage.classList.remove('show');
@@ -3026,6 +3122,11 @@
       myReviewsPage.classList.remove('show');
       myReviewsPage.setAttribute('aria-hidden', 'true');
     };
+    const openMyOrdersPage = () => {
+      if (!isLoggedIn) return openLoginPrompt();
+      openStorePage(myOrdersPage);
+    };
+    const closeMyOrdersPage = () => closeStorePage(myOrdersPage);
     const openAssetsPage = () => {
       if (!isLoggedIn) return openLoginPrompt();
       assetsPage.classList.add('show');
@@ -3046,7 +3147,7 @@
       page.setAttribute('aria-hidden', 'true');
     };
     const closeAllStorePages = () => {
-      [storeCardsPage, storeCouponsPage, storeOrdersPage, storeReviewsPage, storeBookingsPage, myBookingsPage].forEach(closeStorePage);
+      [storeCardsPage, storeCouponsPage, storeOrdersPage, storeReviewsPage, storeBookingsPage, myBookingsPage, myOrdersPage].forEach(closeStorePage);
     };
 
     const returnToGlobalHome = () => {
@@ -3068,6 +3169,8 @@
     document.getElementById('profileBack').addEventListener('click', closeProfilePage);
     document.getElementById('openMyReviews').addEventListener('click', openMyReviewsPage);
     document.getElementById('myReviewsBack').addEventListener('click', closeMyReviewsPage);
+    document.getElementById('openMyOrders').addEventListener('click', openMyOrdersPage);
+    document.getElementById('myOrdersBack').addEventListener('click', closeMyOrdersPage);
     document.getElementById('openAssets').addEventListener('click', openAssetsPage);
     document.getElementById('assetsBack').addEventListener('click', closeAssetsPage);
     document.getElementById('openStoreCards').addEventListener('click', () => openStorePage(storeCardsPage));
@@ -3081,9 +3184,9 @@
       closeStorePage(storeOrdersPage);
       document.querySelector('.scroll').scrollTop = 0;
     });
-    const storeOrderBusinessTabs = [...document.querySelectorAll('.order-business-tab[data-store-order-type]')];
-    const storeOrderTabs = [...document.querySelectorAll('[data-order-status-slot]')];
-    const storeOrderCards = [...document.querySelectorAll('[data-store-order-status]')];
+    const storeOrderBusinessTabs = [...storeOrdersPage.querySelectorAll('.order-business-tab[data-store-order-type]')];
+    const storeOrderTabs = [...storeOrdersPage.querySelectorAll('[data-order-status-slot]')];
+    const storeOrderCards = [...storeOrdersPage.querySelectorAll('[data-store-order-status]')];
     const storeOrderEmpty = document.getElementById('storeOrderEmpty');
     const storeOrderStatusConfig = {
       store: [{ slot: 'all', key: 'all', label: '全部' }, { slot: 'unpaid', key: 'completed', label: '已完成' }, { slot: 'progress', key: 'refunded', label: '已退款' }, { slot: 'service', key: 'partial-refund', label: '部分退款' }, { slot: 'done', key: 'voided', label: '已作废' }],
@@ -3137,10 +3240,59 @@
     });
     renderStoreOrderStatusTabs();
     renderStoreOrders();
+    const myOrderBusinessTabs = [...myOrdersPage.querySelectorAll('.order-business-tab[data-my-order-type]')];
+    const myOrderTabs = [...myOrdersPage.querySelectorAll('[data-my-order-status-slot]')];
+    const myOrderCards = [...myOrdersPage.querySelectorAll('[data-my-order-status]')];
+    const myOrderEmpty = document.getElementById('myOrderEmpty');
+    let activeMyOrderType = 'store';
+    let activeMyOrderStatus = 'all';
+    const renderMyOrders = () => {
+      let visibleCount = 0;
+      myOrderCards.forEach(card => {
+        const visible = card.dataset.myOrderType === activeMyOrderType && (activeMyOrderStatus === 'all' || card.dataset.myOrderStatus === activeMyOrderStatus);
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+      myOrderEmpty.classList.toggle('show', visibleCount === 0);
+    };
+    const renderMyOrderStatusTabs = () => {
+      const config = storeOrderStatusConfig[activeMyOrderType];
+      document.getElementById('myOrderStatusTabs').classList.toggle('group-status-filter', activeMyOrderType === 'group');
+      myOrderTabs.forEach(tab => {
+        const state = config.find(item => item.slot === tab.dataset.myOrderStatusSlot);
+        tab.hidden = !state;
+        if (!state) return;
+        tab.dataset.myOrderFilter = state.key;
+        tab.textContent = state.label;
+        tab.classList.toggle('active', state.key === activeMyOrderStatus);
+      });
+    };
+    myOrderBusinessTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.dataset.myOrderType === 'mall') {
+          showToast('商城购物订单不在本期范围内');
+          return;
+        }
+        activeMyOrderType = tab.dataset.myOrderType;
+        activeMyOrderStatus = 'all';
+        myOrderBusinessTabs.forEach(item => item.classList.toggle('active', item === tab));
+        renderMyOrderStatusTabs();
+        renderMyOrders();
+      });
+    });
+    myOrderTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        activeMyOrderStatus = tab.dataset.myOrderFilter;
+        myOrderTabs.forEach(item => item.classList.toggle('active', item === tab));
+        renderMyOrders();
+      });
+    });
+    renderMyOrderStatusTabs();
+    renderMyOrders();
     document.querySelectorAll('.order-review-action').forEach(action => {
       action.addEventListener('click', () => {
         pendingOrderReviewAction = action;
-        closeStorePage(storeOrdersPage);
+        closeStorePage(action.closest('.store-orders-page'));
         openReviewCompose();
       });
     });
@@ -3316,14 +3468,6 @@
     });
     renderReviewRating(0);
     updateReviewSubmit();
-    document.getElementById('reeditMyReview').addEventListener('click', () => {
-      pendingOrderReviewAction = null;
-      openReviewCompose();
-      renderReviewRating(3);
-      reviewInput.value = '周末到店客人比较多，等待时间比预计稍长，希望后续可以优化预约时段。';
-      reviewInputCount.textContent = String(reviewInput.value.length);
-      updateReviewSubmit();
-    });
 
     const storeData = {
       k11: {
@@ -4292,6 +4436,7 @@
       } else {
         openMyPage();
         if (target === 'my-bookings') openMyBookingsPage();
+        if (target === 'my-orders') openMyOrdersPage();
         if (target === 'my-reviews') openMyReviewsPage();
         if (target === 'profile') openProfilePage();
         if (target === 'settings') openSettingsPage();
@@ -4311,6 +4456,7 @@
       if (showing(assetsPage)) target = document.querySelector('[data-asset-tab].active')?.dataset.assetTab === 'coupon' ? 'assets-coupons' : 'assets-cards';
       if (showing(myReviewsPage)) target = 'my-reviews';
       if (showing(myBookingsPage)) target = 'my-bookings';
+      if (showing(myOrdersPage)) target = 'my-orders';
       if (showing(settingsPage)) target = 'settings';
       if (showing(profilePage)) target = 'profile';
       if (showing(storeCardsPage)) target = 'store-cards';
